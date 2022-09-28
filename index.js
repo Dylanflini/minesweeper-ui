@@ -8,33 +8,34 @@ class Minesweeper extends HTMLElement {
 		const root = this.shadowRoot
 
 		const a = document.createElement('div')
-		a.textContent = 'hola mundo'
+		a.textContent = 'hola minesweeper'
 
 		const rows = Number(this.getAttribute('rows'))
 		const columns = Number(this.getAttribute('columns'))
 		const bombs = Number(this.getAttribute('bombs'))
 
-    const params = {
-      rows,
-      columns,
-      bombs,
-    }
+		const params = {
+			rows,
+			columns,
+			bombs,
+		}
 
-		const { board } = await fetch('http://localhost:4000/start?'+ new URLSearchParams(params)).then(r =>
-			r.json()
-		)
+		const { id, cells } = await fetch(
+			'http://localhost:4000/start?' + new URLSearchParams(params)
+		).then(r => r.json())
 
-		console.log({board})
+		const cellContainer = document.createElement('div')
+		cellContainer.classList.add('cell-container')
+		cellContainer.addEventListener('click', ({ target }) => {
+			const { x, y } = target.dataset
+			console.log(x, y)
+		})
 
-    const cellContainer = document.createElement('div')
-    cellContainer.classList.add('cell-container')
-
-		board.cells.forEach(cell => {
-      console.log(cell)
+		cells.forEach(cell => {
 			const button = document.createElement('button')
 			button.classList.add('cell')
-      button.dataset.x = cell.position[0]
-      button.dataset.y = cell.position[1]
+			button.dataset.x = cell.position[0]
+			button.dataset.y = cell.position[1]
 
 			cellContainer.appendChild(button)
 		})
